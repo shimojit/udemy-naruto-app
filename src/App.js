@@ -1,25 +1,39 @@
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
 import './App.css';
+import axios from 'axios';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const [characters, setCharacters] = useState([]);
+  useEffect(() => {
+    fetchCharacters();
+  }, []);
+
+  const fetchCharacters = async () => {
+    const apiUrl = 'https://narutodb.xyz/api/character';
+
+    const result = await axios.get(apiUrl);
+    setCharacters(result.data.characters);
+    console.log(result);
+  };
+  return <div className="container">
+    <main>
+      <div className="cards-container">
+        {characters.map((character) => {
+          return <div className='card' key={character.id}>
+            <img
+              src={
+                character.images[0] != null
+                ? character.images[0]
+                : 'dummy.png'
+              }
+              alt="character"
+              className="card-image"
+            />
+          </div>;
+        })}
+      </div>
+    </main>
+  </div>;
 }
 
 export default App;
